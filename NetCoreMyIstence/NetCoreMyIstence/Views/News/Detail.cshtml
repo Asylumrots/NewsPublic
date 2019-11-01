@@ -1,0 +1,152 @@
+﻿@{
+    int id = 0;
+}
+@using NetCoreMyIstence.ViewModel;
+@using NetCoreMyIstence.Model;
+<div class="content-wrap">
+    <div class="content">
+        @{
+            var news = ViewData["News"] as News;
+            id = news.Id;
+            <header class="article-header">
+                <h1 class="article-title"><a href="#" title="@news.Title">@news.Title</a></h1>
+                <div class="article-meta">
+                    <span class="item article-meta-time">
+                        <time class="time" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="发表时间：@news.PublishDate"><i class="glyphicon glyphicon-time"></i> @news.PublishDate.ToShortDateString()</time>
+                    </span> <span class="item article-meta-category" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="@ViewData["NewsClassify"]"><i class="glyphicon glyphicon-list"></i> <a href="#" title="@ViewData["NewsClassify"]">@ViewData["NewsClassify"]</a></span>  <span class="item article-meta-comment" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="评论量"><i class="glyphicon glyphicon-comment"></i> @ViewData["NewsCommnetCount"]</span>
+                </div>
+            </header>
+            <article class="article-content">
+                <p><img data-original="@news.Image" src="@news.Image" alt="" /></p>
+                <p>
+                    @news.Contents
+                </p>
+
+                <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a><a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a><a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a></div>
+
+                <script>window._bd_share_config = { "common": { "bdSnsKey": {}, "bdText": "", "bdMini": "2", "bdMiniList": false, "bdPic": "", "bdStyle": "1", "bdSize": "32" }, "share": {} }; with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=0.js?cdnversion=' + ~(-new Date() / 36e5)];</script>
+            </article>
+        }
+
+        @*<div class="relates">
+            <div class="title">
+                <h3>相关推荐</h3>
+            </div>
+            @{
+                var recommonds = ViewData["RecommendNews"] as ResponseModel;
+                <ul>
+                    @if (recommonds.code == 200)
+                    {
+                        foreach (var recommond in recommonds.data)
+                        {
+                            <li><a href="/News/Detail?id=@recommond.Id" title="@recommond.Title">@recommond.Title</a></li>
+                        }
+                    }
+                </ul>
+            }
+        </div>*@
+        <div class="title" id="comment">
+            <h3>评论</h3>
+        </div>
+        <div id="respond">
+            <form id="comment-form" name="comment-form" action="" method="POST">
+                <div class="comment">
+                    <div class="comment-box">
+                        <textarea placeholder="您的评论或留言（必填）" name="comment-textarea" id="comment-textarea" cols="100%" rows="3" tabindex="3"></textarea>
+                        <div class="comment-ctrl">
+                            <div class="comment-prompt" style="display: none;"> <i class="fa fa-spin fa-circle-o-notch"></i> <span class="comment-prompt-text">评论正在提交中...请稍后</span> </div>
+                            <div class="comment-success" style="display: none;"> <i class="fa fa-check"></i> <span class="comment-prompt-text">评论提交成功...</span> </div>
+                            <button type="button" name="comment-submit" id="comment-submit" onclick="addComment()" tabindex="4">评论</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+        <div id="postcomments">
+            <ol id="comment_list" class="commentlist">
+                @{
+                    var comments = ViewData["Comments"] as List<NewsComment>;
+                    int counts = Convert.ToInt32(ViewData["NewsCommnetCount"]);
+                    foreach (var comment in comments)
+                    {
+                        <li class="comment-content"><span class="comment-f">#@counts</span><div class="comment-main"><p><a class="address" rel="nofollow" target="_blank">匿名</a><span class="time">(@comment.AddTime)</span><br>@comment.Contents</p></div></li>
+                        counts--;
+                    }
+                }
+            </ol>
+        </div>
+    </div>
+</div>
+<aside class="sidebar">
+    <div class="fixed">
+        <div class="widget widget-tabs">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#notice" aria-controls="notice" role="tab" data-toggle="tab" draggable="false">统计信息</a></li>
+                <li role="presentation"><a href="#contact" aria-controls="contact" role="tab" data-toggle="tab" draggable="false">联系站长</a></li>
+            </ul>
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane contact active" id="notice">
+                    <h2>
+                        新闻总数:
+                        @ViewData["NewsConunt"]篇
+                    </h2>
+                    <h2>
+                        网站运行:
+                        <span id="sitetime">正常 </span>
+                    </h2>
+                </div>
+                <div role="tabpanel" class="tab-pane contact" id="contact">
+                    <h2>
+                        QQ:
+                        <a href="" target="_blank" rel="nofollow" data-toggle="tooltip" data-placement="bottom" title="" draggable="false" data-original-title="QQ:1773527072">1773527072</a>
+                    </h2>
+                    <h2>
+                        Email:
+                        <a href="mailto:1773527072@qq.com" target="_blank" data-toggle="tooltip" rel="nofollow" data-placement="bottom" title="" draggable="false" data-original-title="Email:1773527072@qq.com">1773527072@qq.com</a>
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    @*<div class="widget widget_hot">
+
+    </div>*@
+    @*<div class="widget widget_sentence">
+        <a href="http://study.163.com/instructor/1025318795.htm" target="_blank" rel="nofollow">
+            
+        </a>
+    </div>
+    <div class="widget widget_sentence">
+        <a href="http://study.163.com/instructor/1025318795.htm" target="_blank" rel="nofollow">
+            <img style="width: 100%" src="/images/ad.jpg">
+        </a>
+    </div>*@
+</aside>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.ias.js"></script>
+<script src="/js/scripts.js"></script>
+<script type="text/javascript">
+    function addComment() {
+        var content = $("#comment-textarea").val();
+        if (content != "" && content != null) {
+            $.ajax({
+                type: 'post',
+                url: '/News/AddComment',
+                data:{ NewsId:@id, Contents: content},
+                success: function (data) {
+                    if (data.code == 200) {
+                        $("#comment-textarea").val('');
+                        var html = '<li class="comment-content"><span class="comment-f">' + data.data.floor + '</span><div class="comment-main"><p><a class="address" rel="nofollow" target="_blank">匿名</a><span class="time">(' + data.data.addTime + ')</span><br>' + data.data.contents + '</p></div></li>';
+                        $("#comment_list").prepend(html);
+                    } else {
+                        alert(data.message);
+                    }
+                }
+            });
+        }
+    }
+</script>
+
+

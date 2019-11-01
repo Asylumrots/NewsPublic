@@ -1,0 +1,90 @@
+﻿@using NetCoreMyIstence.ViewModel;
+@using NetCoreMyIstence.Model;
+
+<div class="content-wrap">
+    <div class="content">
+        <div class="title">
+            <h3 style="line-height: 1.3">@ViewData["ClassifyName"]</h3>
+        </div>
+        @{
+            var response = ViewData["NewsList"] as ResponseModel;
+            if (response.code == 200)
+            {
+                foreach (var news in response.data)
+                {
+                    <article class="excerpt">
+                        <a class="focus" href="/News/Detail?id=@news.Id" title="@news.Title" target="_blank"><img class="thumb" data-original="@news.Image" src="@news.Image" alt="@news.Title" style="display: inline;"></a>
+                        <header>
+                            <h2><a href="/News/Detail?id=@news.Id" title="@news.Title" target="_blank">@news.Title</a></h2>
+                        </header>
+                        <p class="meta">
+                            <time class="time"><i class="glyphicon glyphicon-time"></i> @news.PublishDate</time>
+                            <a class="comment" title="评论" target="_blank"><i class="glyphicon glyphicon-comment"></i> @news.CommentCount</a>
+                        </p>
+                        <p class="note"> @news.Contents</p>
+                    </article>
+                }
+            }
+        }
+    </div>
+</div>
+<aside class="sidebar">
+    <div class="fixed">
+        <div class="widget widget_search">
+            <form class="navbar-form" action="/Search" method="post">
+                <div class="input-group">
+                    <input type="text" name="keyword" id="keyword" class="form-control" size="35" placeholder="请输入关键字" maxlength="15" autocomplete="off">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default btn-search" name="search" type="button" onclick="searchOneNews()">搜索</button>
+                    </span>
+                </div>
+            </form>
+        </div>
+
+    </div>
+    <div class="widget widget_hot">
+        <h3>最新评论文章</h3>
+        @*<ul>
+            @{
+                var newCommentNews = ViewData["NewCommentNews"] as ResponseModel;
+                if (response.code == 200)
+                {
+                    foreach (var news in newCommentNews.data)
+                    {
+                        <li>
+                            <a title="@news.Title" href="/News/Detail?id=@news.Id">
+                                <span class="thumbnail">
+                                    <img class="thumb" data-original="@news.Image" src="@news.Image" alt="@news.Title" style="display: block;">
+                                </span><span class="text">@news.Title</span><span class="muted">
+                                    <i class="glyphicon glyphicon-time"></i>
+                                    @news.PublishDate
+                                </span>
+                             </a>
+                        </li>
+                    }
+                }
+            }
+        </ul>*@
+    </div>
+</aside>
+
+
+<script type="text/javascript">
+    function searchOneNews() {
+        var keyword = $("#keyword").val();
+        if (keyword != "" && keyword != null) {
+            $.ajax({
+                type: 'get',
+                url: '/Home/SearchOneNews',
+                data: { keyword: keyword },
+                success: function (data) {
+                    if (data.code == 200) {
+                        window.open("/News/Detail?id=" + data.data);
+                    } else {
+                        window.open("/Home/Wrong");
+                    }
+                }
+            });
+        }
+    }
+</script>

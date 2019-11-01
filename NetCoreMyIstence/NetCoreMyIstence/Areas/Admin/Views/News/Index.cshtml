@@ -1,0 +1,167 @@
+﻿
+@{
+    Layout = null;
+}
+
+@model List<NetCoreMyIstence.Model.NewsClassify>
+
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="/admin/js/html5.js"></script>
+    <script type="text/javascript" src="/admin/js/respond.min.js"></script>
+    <script type="text/javascript" src="/admin/js/PIE_IE678.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="/admin/css/H-ui.css" />
+    <link type="text/css" rel="stylesheet" href="/admin/css/H-ui.admin.css" />
+    <link type="text/css" rel="stylesheet" href="/admin/font/font-awesome.min.css" />
+    <!--[if IE 7]>
+    <link href="/admin/font/font-awesome-ie7.min.css" rel="stylesheet" type="text/css" />
+    <![endif]-->
+    <title>新闻管理</title>
+</head>
+<body>
+    <nav class="Hui-breadcrumb"><i class="icon-home"></i> 首页 <span class="c-gray en">&gt;</span> 新闻中心 <span class="c-gray en">&gt;</span> 新闻管理 <a class="btn btn-success radius r mr-20" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="icon-refresh"></i></a></nav>
+    <div class="pd-20">
+        <div class="text-c">
+            新闻类别:
+            <select class="select" id="classifyId" name="classifyId">
+                <option value="0">选择一个新闻类别</option>
+                    @foreach (var classify in Model)
+                    {
+                        <option value="@classify.Id">@classify.Name</option>
+                    }
+            </select>
+            &nbsp;
+            <input type="text" class="input-text" style="width:250px" placeholder="输入新闻标题" id="keyword" name="keyword">&nbsp;<button type="button" class="btn btn-success" onclick="search()"><i class="icon-search"></i> 搜新闻</button>
+
+        </div>
+        <div class="cl pd-5 bg-1 bk-gray mt-20">
+            <span class="l">
+                <a href="javascript:;" onClick="user_add('550','700','添加新闻','/Admin/News/NewsAdd')" class="btn btn-primary radius"><i class="icon-plus"></i> 添加新闻</a>
+            </span>
+
+        </div>
+        <table class="table table-border table-bordered table-hover table-bg table-sort">
+            <thead>
+                <tr class="text-c">
+                    <th width="80">ID</th>
+                    <th width="100">类别名称</th>
+                    <th width="300">标题</th>
+                    <th>内容</th>
+                    <th width="150">发布日期</th>
+                    <th width="200">备注</th>
+                    <th width="100">操作</th>
+                </tr>
+            </thead>
+            <tbody id="news_contents"></tbody>
+        </table>
+        <div id="pageNav" class="pageNav"></div>
+    </div>
+    <script type="text/javascript" src="/admin/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/admin/layer/layer.min.js"></script>
+    <script type="text/javascript" src="/admin/js/pagenav.cn.js"></script>
+    <script type="text/javascript" src="/admin/js/H-ui.js"></script>
+    @*<script type="text/javascript" src="/admin/plugin/My97DatePicker/WdatePicker.js"></script>*@
+    <script type="text/javascript" src="/admin/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="/admin/js/H-ui.admin.js"></script>
+    <script type="text/javascript">
+        var pageSize = 10;
+        var pageIndex = 1;
+        var currentPageCount = 0;
+        var classifyId = 0;
+        var keyword = "";
+        var lastPage = 1;
+        window.onload = (function () {
+            // optional set
+            pageNav.pre = "&lt;上一页";
+            pageNav.next = "下一页&gt;";
+            getNews(pageIndex, pageSize, classifyId, keyword);
+        });
+        $('.table-sort').dataTable({
+            "lengthMenu": false,//显示数量选择
+            "bFilter": false,//过滤功能
+            "bPaginate": false,//翻页信息
+            "bInfo": false,//数量信息
+            "aaSorting": [[1, "desc"]],//默认第几个排序
+            "bStateSave": true,//状态保存
+            "aoColumnDefs": [
+                //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
+                { "orderable": false, "aTargets": [0, 1, 2, 3, 4, 5, 6, 7] }// 制定列不参与排序
+            ]
+        });
+        function search() {
+            var classifyId = $("#classifyId").val();
+            var keyword = $("#keyword").val();
+            pageIndex = 1;
+            getNews(pageIndex, pageSize, classifyId, keyword);
+        }
+        function getNews(pageIndex, pageSize, classifyId, keyword) {
+            $.ajax({
+                type: 'get',
+                async: true,
+                url: '/Admin/News/GetNews',
+                data: { pageIndex: pageIndex, pageSize: pageSize, classifyId: classifyId, keyword: keyword },
+                success: function (result) {
+                    currentPageCount = result.data.length;//当前页的新闻数量
+                    var totalPage = parseInt(result.total / pageSize + 1);//总页数
+                    // p,当前页码,pn,总页面
+                    pageNav.fn = function (p, pn) {
+                        $("#pageinfo").text("当前页:" + p + " 总页: " + totalPage);
+                        if (p != lastPage)
+                            getNews(p, pageSize, classifyId, keyword)
+                    };
+                    pageNav.go(pageIndex, totalPage);
+                    $("#news_contents").empty();
+                    for (var i = 0; i < result.data.length; i++) {
+                        var trData = result.data[i];
+                        var tr = '<tr class="text-c"><td>' + trData.id + '</td><td>' + trData.classifyName + '</td><td>' + trData.title + '</td><td>' + trData.contents + '</td><td>' + trData.publishDate + '</td><td>' + trData.remark + '</td><td class="f-14 user-manage"><a title="删除" href="javascript:;" onClick="del(this,' + trData.id + ')" class="ml-5" style="text-decoration:none"><i class="icon-trash"></i></a></td></tr>';
+                        $("#news_contents").append(tr);
+                    }
+                    lastPage = pageIndex;
+                }
+            });
+        }
+        //删除新闻
+        function del(obj, id) {
+            layer.confirm('确认要删除吗？', function (index) {
+                //$(obj).parents("tr").remove();
+                //layer.msg('已删除!', 1);
+                $.ajax({
+                    type: 'post',
+                    async: true,
+                    url: '/Admin/News/DelNews',
+                    data: { id: id },
+                    success: function (result) {
+                        if (result.code == 200) {
+                            layer.msg('已删除!', 1);
+                            if (currentPageCount == 1) {
+                                if (pageIndex == 1) {
+                                    reload();
+                                } else {
+                                    getNews(pageIndex - 1, pageSize, classifyId, keyword);
+                                }
+                            } else {
+                                getNews(pageIndex, pageSize, classifyId, keyword);
+                                //$(obj).parents("tr").remove();
+                            }
+                        } else {
+                            layer.msg(result.message, 1);
+                        }
+                    }
+                });
+            });
+        }
+        function reload() {
+            location.replace(location.href);
+        }
+    </script>
+
+</body>
+</html>

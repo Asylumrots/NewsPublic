@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NetCoreMyIstence.IRepository\NetCoreMyIstence.IRepository.csproj" />
+    <ProjectReference Include="..\NetCoreMyIstence.Repository.SqlServer\NetCoreMyIstence.Repository.SqlServer.csproj" />
+    <ProjectReference Include="..\NetCoreMyIstence.ViewModel\NetCoreMyIstence.ViewModel.csproj" />
+  </ItemGroup>
+
+</Project>
