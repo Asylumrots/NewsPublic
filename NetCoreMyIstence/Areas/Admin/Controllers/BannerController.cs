@@ -26,18 +26,32 @@ namespace NetCoreMyIstence.Web.Areas.Admin.Controllers
             this.host = host;
         }
 
+        /// <summary>
+        /// 头部信息主页视图
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
             var bannerList = bannerServices.GetBanner();
             return View(bannerList);
         }
 
+        /// <summary>
+        /// 添加头部信息视图
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult BannerAdd()
         {
             return View();
         }
 
+        /// <summary>
+        /// 添加头部信息
+        /// </summary>
+        /// <param name="bannerModel"></param>
+        /// <param name="collection"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult AddBanner(BannerModel bannerModel, IFormCollection collection)
         {
@@ -67,6 +81,11 @@ namespace NetCoreMyIstence.Web.Areas.Admin.Controllers
             return Json(new ResponseModel { code = 0, message = "请上传图片文件" });
         }
 
+        /// <summary>
+        /// 删除头部信息
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public JsonResult DelBanner(int id)
         {
             if (id <= 0)

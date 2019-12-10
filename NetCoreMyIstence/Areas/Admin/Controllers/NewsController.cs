@@ -29,12 +29,73 @@ namespace NetCoreMyIstence.Web.Areas.Admin.Controllers
             this.host = host;
         }
 
+        #region 页面视图
+        /// <summary>
+        /// 新闻页面视图
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
             var list = newsClassifyServices.GetAll();
             return View(list);
         }
 
+        /// <summary>
+        /// 添加新闻页面视图
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult NewsAdd()
+        {
+            var list = newsClassifyServices.GetAll();
+            ResponseModel response;
+            if (list == null)
+                response = new ResponseModel { code = 200, message = "类别列表获取失败" };
+            response = new ResponseModel { code = 200, message = "类别列表获取成功", data = list };
+            return View(response);
+        }
+
+        /// <summary>
+        /// 新闻类别页面视图
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult NewsClassify()
+        {
+            var list = newsClassifyServices.GetNewsClassify();
+            return View(list);
+        }
+
+        /// <summary>
+        /// 编辑新闻类别视图
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult NewsClassifyEdit(int id)
+        {
+            var newsClassify = newsClassifyServices.GetNewsClassifyById(id);
+            return View(newsClassify);
+        }
+
+        /// <summary>
+        /// 添加新闻类别视图
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult NewsClassifyAdd()
+        {
+            return View();
+        }
+        #endregion
+
+        /// <summary>
+        /// 获取新闻信息
+        /// </summary>
+        /// <param name="pageIndex">页面索引</param>
+        /// <param name="pageSize">页面大小</param>
+        /// <param name="classifyId">类别ID</param>
+        /// <param name="keyword">关键字</param>
+        /// <returns></returns>
         [HttpGet]
         public JsonResult GetNews(int pageIndex, int pageSize, int classifyId, string keyword)
         {
@@ -52,17 +113,12 @@ namespace NetCoreMyIstence.Web.Areas.Admin.Controllers
             return Json(new { total = total, data = news.data });
         }
 
-        [HttpGet]
-        public IActionResult NewsAdd()
-        {
-            var list = newsClassifyServices.GetAll();
-            ResponseModel response;
-            if (list == null)
-                response = new ResponseModel { code = 200, message = "类别列表获取失败" };
-            response = new ResponseModel { code = 200, message = "类别列表获取成功", data = list };
-            return View(response);
-        }
-
+        /// <summary>
+        /// 添加新闻
+        /// </summary>
+        /// <param name="news"></param>
+        /// <param name="collection"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult AddNews(AddNews news,IFormCollection collection)
         {
@@ -93,25 +149,32 @@ namespace NetCoreMyIstence.Web.Areas.Admin.Controllers
             return Json(new ResponseModel { code = 0, message = "请上传图片文件" });
         }
 
+        /// <summary>
+        /// 删除新闻
+        /// </summary>
+        /// <param name="id">新闻ID</param>
+        /// <returns></returns>
         public JsonResult DelNews(int id)
         {
             return Json(newsServices.DelNews(id));
         }
 
-
-        public IActionResult NewsClassify()
+        /// <summary>
+        /// 添加新闻类别
+        /// </summary>
+        /// <param name="newsClassifyModel"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult NewsClassifyAdd(NewsClassifyModel newsClassifyModel)
         {
-            var list = newsClassifyServices.GetNewsClassify();
-            return View(list);
+            return Json(newsClassifyServices.NewsClassifyAdd(newsClassifyModel));
         }
 
-        [HttpGet]
-        public IActionResult NewsClassifyEdit(int id)
-        {
-            var newsClassify = newsClassifyServices.GetNewsClassifyById(id);
-            return View(newsClassify);
-        }
-
+        /// <summary>
+        /// 编辑新闻类别
+        /// </summary>
+        /// <param name="newsClassifyModel"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult NewsClassifyEdit(NewsClassifyModel newsClassifyModel)
         {
@@ -119,18 +182,6 @@ namespace NetCoreMyIstence.Web.Areas.Admin.Controllers
             if (newsClassifyModel.Id<=0)
                 return Json(new ResponseModel { code = 0, message = "请填写新闻类别序号" });
             return Json(newsClassifyServices.EditNewsClassify(newsClassifyModel));
-        }
-
-        [HttpGet]
-        public IActionResult NewsClassifyAdd()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public JsonResult NewsClassifyAdd(NewsClassifyModel newsClassifyModel)
-        {
-            return Json(newsClassifyServices.NewsClassifyAdd(newsClassifyModel));
         }
     }
 }

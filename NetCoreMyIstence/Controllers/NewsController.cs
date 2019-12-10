@@ -52,6 +52,11 @@ namespace NetCoreMyIstence.Web.Controllers
             return View(list);
         }
 
+        /// <summary>
+        /// 新闻类别页面
+        /// </summary>
+        /// <param name="id">类别ID</param>
+        /// <returns></returns>
         public IActionResult Classify(int id)
         {
             ViewData["Title"] = "分类页";

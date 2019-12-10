@@ -37,6 +37,7 @@ namespace NetCoreMyIstence
             });
 
             //services.AddTransient<DbContext>();
+            //注册服务
             services.AddSingleton<IBannerServices, BannerServices>();
             services.AddSingleton<INewsServices, NewsServices>();
             services.AddSingleton<INewsClassifyServices, NewsClassifyServices>();

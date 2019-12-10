@@ -12,11 +12,22 @@ namespace NetCoreMyIstence.Web.Areas.Admin.Controllers
     [Area("Admin")]
     public class LoginController : Controller
     {
+        /// <summary>
+        /// 登录页面视图
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
             return View();
         }
 
+        /// <summary>
+        /// 登录
+        /// </summary>
+        /// <param name="username">用户名</param>
+        /// <param name="password">密码</param>
+        /// <param name="code">验证码</param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult CheckLogin(string username, string password, string code)
         {
@@ -32,6 +43,9 @@ namespace NetCoreMyIstence.Web.Areas.Admin.Controllers
             return Json(new ResponseModel { code=0,message="用户名或密码错误"});
         }
 
+        /// <summary>
+        /// 获取验证码
+        /// </summary>
         public string CodeString;
         public IActionResult GetAuthCode()
         {

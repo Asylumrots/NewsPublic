@@ -20,12 +20,22 @@ namespace NetCoreMyIstence.Web.Areas.Admin.Controllers
         {
             this.newsCommentServices = newsCommentServices;
         }
+
+        /// <summary>
+        /// 评论视图
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
             var list = newsCommentServices.GetComment();
             return View(list);
         }
 
+        /// <summary>
+        /// 删除评论
+        /// </summary>
+        /// <param name="id">评论ID</param>
+        /// <returns></returns>
         public JsonResult DelComment(int id)
         {
             if (id<=0)

@@ -11,6 +11,10 @@ namespace NetCoreMyIstence.Web.Areas.Admin.Controllers
     [Area("Admin")]
     public class HomeController : BaseController
     {
+        /// <summary>
+        /// 主页视图
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
             return View();

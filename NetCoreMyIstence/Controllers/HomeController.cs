@@ -28,12 +28,20 @@ namespace NetCoreMyIstence.Controllers
             this.newsCommentServices = newsCommentServices;
         }
         
+        /// <summary>
+        /// 主页视图
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
             List<NewsClassify> list = newsClassifyServices.GetAllOrderBySort();
             return View(list);
         }
 
+        /// <summary>
+        /// 错误视图
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Wrong()
         {
             return View();
